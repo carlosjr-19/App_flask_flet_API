@@ -1,7 +1,13 @@
 from flask import Flask, jsonify
+import os
+from cargar_archivos import upload_bp
 import env
 
 app = Flask(__name__)
+
+
+# Registramos el blueprint
+app.register_blueprint(upload_bp)
 
 mvnos = env.MVNOS
 

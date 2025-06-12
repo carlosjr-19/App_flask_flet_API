@@ -1,6 +1,6 @@
 import flet as ft
 import requests
-from components.config import obtener_config_colores, obtener_config_formulario, obtener_info_proceso
+from components.config import obtener_config_colores, obtener_config_formulario 
 from components.formulario import build_formulario
 from components.menu import crear_menu
 from components.info import crear_info_panel
@@ -46,10 +46,34 @@ def main(page: ft.Page):
             fecha = input_fecha.value
 
             print(comision, sales_p, marca, proceso, fecha)
+
+            # Empaquetar archivos para enviar al backend
+            files = {
+                'archivo_1': open(archivo_1_path, 'rb'),
+                'archivo_2': open(archivo_2_path, 'rb')
+            }
+
+            response = requests.post("http://127.0.0.1:5000/upload", files=files)
+
+            if response.status_code == 200:
+                data = response.json()
+                info_textfield.value += f"\n✅ {data["message"]}\n"
+                info_textfield.value += f"Archivo 1 filas: {data["archivo_1_filas"]}\n"
+                info_textfield.value += f"Archivo 2 filas: {data["archivo_2_filas"]}\n"
+            else:
+                info_textfield.value += f"\n❌ Error: {response.text}"
+
+            page.update()
+            
         
         except Exception as ex:
                 info_textfield.value += f"❌ Error al procesar los archivos: {ex}\n"
-                print(Exception)
+                print(ex)
+                page.update()
+
+        finally:
+            loader.visible = False
+            page.update()
 
 
 

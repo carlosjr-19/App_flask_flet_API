@@ -10,3 +10,6 @@ def obtener_config_formulario():
 
 def obtener_info_proceso():
     return requests.get(f"{BASE_URL}/info-proceso").json()
+
+def enviar_archivos():
+    return requests.get(f"{BASE_URL}/upload")
